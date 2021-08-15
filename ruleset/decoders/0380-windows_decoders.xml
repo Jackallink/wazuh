@@ -102,12 +102,24 @@
   - 2006-07-23 17:57:59 192.168.3.64 Administrator MSFTPSVC1 HAIJO2 192.168.1.12 21 [144]USER Administrator - 331 0 0 0 0 FTP - - - -
   - 2006-07-23 17:57:59 192.168.3.64 Administrator MSFTPSVC1 HAIJO2 192.168.1.12 21 [144]PASS - - 230 0 0 0 16 FTP - - - -
   -->
+<!--
+  - 15/08/2021,Modified by Jackallink
+  - In the Original regex '[\d+]' ,the characters '[' and ']' should be escaped. 
+  - <decoder name="msftp">
+  - 	<parent>windows-date-format</parent>
+  -	<use_own_name>true</use_own_name>
+  -	<prematch offset="after_parent">^\S+ \S+ MSFTPSVC</prematch>
+  -	<regex offset="after_parent">^(\S+) (\S+) \S+ \S+ \S+ </regex>
+  -	<regex>\d+ [\d+](\S+) \S+ \S+ (\d+) </regex>
+  -	<order>srcip,user,action,id</order>
+  - </decoder>
+  -->
 <decoder name="msftp">
   <parent>windows-date-format</parent>
   <use_own_name>true</use_own_name>
   <prematch offset="after_parent">^\S+ \S+ MSFTPSVC</prematch>
   <regex offset="after_parent">^(\S+) (\S+) \S+ \S+ \S+ </regex>
-  <regex>\d+ [\d+](\S+) \S+ \S+ (\d+) </regex>
+  <regex>\d+ \[\d+\](\S+) \S+ \S+ (\d+) </regex>
   <order>srcip,user,action,id</order>
 </decoder>
 
@@ -699,10 +711,20 @@ Subject:
   - security[failure] 577 IBM17M\Jeremy Lee  Privileged Service Called:  Server:Security  Service:-  Primary User Name:IBM17M$  Primary Domain:LEETHERNET  Primary Logon ID:(0x0,0x3E7)  Client User Name:Jeremy Lee  Client Domain:IBM17M  Client Logon ID:(0x0,0x1447F)  Privileges:SeSecurityPrivilege
   - security[success] 528 IBM17M\Jeremy Lee  Successful Logon:  User Name:Jeremy Lee  Domain:IBM17M  Logon ID:(0x0,0x3A2E471)  Logon Type:2  Logon Process:User32    Authentication Package:Negotiate  Workstation Name:IBM17M  Logon GUID: {00000000-0000-0000-0000-000000000000}
   -->
+<!--
+  - 15/08/2021,Modified by Jackallink
+  - In the Original prematch and regex '[\w+]' and '[(\w+])',the characters '[' and ']' should be escaped. 
+  - <decoder name="windows-ntsyslog">
+  - <type>windows</type>
+  - <prematch>^security[\w+] \d+ </prematch>
+  - <regex>^(\w+)[(\w+)] (\d+) </regex>
+  - <order>extra_data, status, id</order>
+  - </decoder>
+-->
 <decoder name="windows-ntsyslog">
   <type>windows</type>
-  <prematch>^security[\w+] \d+ </prematch>
-  <regex>^(\w+)[(\w+)] (\d+) </regex>
+  <prematch>^security\[\w+\] \d+ </prematch>
+  <regex>^(\w+)\[(\w+)\] (\d+) </regex>
   <order>extra_data, status, id</order>
 </decoder>
 
